@@ -18,7 +18,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex-grow bg-gradient-to-br from-base-300 via-base-200 to-base-100 flex p-4 relative overflow-hidden">
+    <div className="max-h-screen flex-grow bg-gradient-to-br from-base-300 via-base-200 to-base-100 flex p-7 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden -z-0">
         <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-success/20 to-accent/20 rounded-3xl rotate-45 animate-pulse"></div>
