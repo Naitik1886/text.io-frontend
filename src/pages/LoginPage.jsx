@@ -18,7 +18,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="max-h-screen flex-grow bg-gradient-to-br from-base-300 via-base-200 to-base-100 flex p-7 relative overflow-hidden">
+    // 1. Changed max-h-screen to min-h-screen for robust full-height layout.
+    // 2. Changed p-7 to be responsive for better mobile spacing.
+    <div className="min-h-screen flex-grow bg-gradient-to-br from-base-300 via-base-200 to-base-100 flex p-4 md:p-7 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden -z-0">
         <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-success/20 to-accent/20 rounded-3xl rotate-45 animate-pulse"></div>
