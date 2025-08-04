@@ -30,7 +30,9 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <a onClick={logout}>Logout</a>
+                  <button onClick={logout}>
+                    <LogOutIcon />
+                    <span>Logout</span></button>
                 </li>
               </>
             )}

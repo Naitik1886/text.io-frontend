@@ -6,19 +6,18 @@ import { useChatStore } from "../store/useChatStore";
 const MessageInput = () => {
   const fileInputRef = useRef(null);
   const [text, setText] = useState("");
-  const [imagePreview, setImagePreview] = useState();
+  const [imagePreview, setImagePreview] = useState(null);
   const { sendMessage } = useChatStore();
 
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-
-  
-
-  const handleImagechange = async (e) => {
-    const file = e.target.files[0];
     if (!file.type.startsWith("image/")) {
-      toast.error("Plz select an image file only");
+      toast.error("Please select an image file.");
       return;
     }
+
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result);
@@ -28,88 +27,88 @@ const MessageInput = () => {
 
   const removeImage = () => {
     setImagePreview(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!text.trim() && !imagePreview) {
+      return;
+    }
+
     try {
-      if (!text.trim() && !imagePreview) {
-        return;
-      }
       await sendMessage({
         text: text.trim(),
         image: imagePreview,
       });
-
-      setText("");
-      setImagePreview(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
-      console.log(error);
-    }finally{
+      console.error(error);
+      toast.error("Failed to send message.");
+    } finally {
       setText("");
-      setImagePreview(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      removeImage();
     }
   };
 
   return (
-    <div className="p-4 w-full">
+    <div className="bg-base-200 p-2 sm:p-3 md:p-4 w-full">
+      {/* Image Preview Section */}
       {imagePreview && (
-        <div className="mb-3 flex items-center gap-2">
-          <div className="relative">
-            <img
-              src={imagePreview}
-              alt="Preview"
-              className="w-20 h-20 object-cover rounded-lg border border-zinc-700"
-            />
-          </div>
+        <div className="mb-2 relative w-20 h-20">
+          <img
+            src={imagePreview}
+            alt="Preview"
+            className="w-full h-full object-cover rounded-lg border border-base-300"
+          />
+          {/* Moved the remove button inside the relative container for correct positioning */}
           <button
             onClick={removeImage}
-            className=" -top-1.5  -right-1.5 w-5 h-5 rounded-full bg-base-300
-              flex items-center justify-center"
+            className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-base-300 flex items-center justify-center hover:bg-base-100 transition-all"
             type="button"
           >
-            <X className="size-3 " />
+            <X className="size-4" />
           </button>
         </div>
       )}
 
+      {/* Form Section */}
       <form onSubmit={handleSubmit} className="flex items-center gap-2">
-        <div className="flex-1 flex gap-2">
+        <div className="flex-1 flex items-center gap-2">
           <input
             className="w-full input input-bordered rounded-lg input-sm sm:input-md"
             onChange={(e) => setText(e.target.value)}
             type="text"
             value={text}
-          
-            
-            placeholder="type a message..."
-            
+            placeholder="Type a message..."
           />
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/"
+            accept="image/*"
             className="hidden"
-            onChange={handleImagechange}
+            onChange={handleImageChange}
           />
+
+          {/* Image button - hidden on extra-small screens */}
           <button
             onClick={() => fileInputRef.current?.click()}
-            className={`hidden sm:flex btn btn-circle
-                     ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
+            className={`hidden sm:flex btn btn-sm btn-circle
+              ${imagePreview ? "btn-success" : ""}`}
             type="button"
           >
-            <Image size={20} />
+            <Image size={18} />
           </button>
         </div>
+
+        {/* Send button */}
         <button
           type="submit"
-          className="btn btn-sm btn-circle"
+          className="btn btn-sm btn-circle btn-primary"
           disabled={!text.trim() && !imagePreview}
         >
-          <Send size={22} />
+          <Send size={18} />
         </button>
       </form>
     </div>
