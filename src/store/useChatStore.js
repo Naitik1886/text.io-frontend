@@ -56,18 +56,21 @@ export const useChatStore = create((set ,get) => ({
 
   },
 
+// In your useChatStore.js
+listenToMessages : () => {
+  const socket = useAuthStore.getState().socket;
+  if (!socket) return;
 
-  listenToMessages : () => {
-    const {selectedUser} = get();
-    const {messages} = get()
-    if(!selectedUser) return ;
-    const socket = useAuthStore.getState().socket
-    socket.on("newMessages", (newMessage) => {
-      if(newMessage.senderId !==  selectedUser._id) return 
-      
-set({messages:[...messages, newMessage]})
-    })
-  },
+  socket.on("newMessages", (newMessage) => {
+    // This checks if the message is for the currently open chat
+    if (newMessage.senderId !== get().selectedUser?._id) return;
+    
+    // This correctly uses the current state to append the new message
+    set((state) => ({
+      messages: [...state.messages, newMessage],
+    }));
+  });
+},
 
   dontListenToMessages : () => {
 const socket = useAuthStore.getState().socket
