@@ -13,7 +13,7 @@ const Navbar = () => {
       {/* Navbar Start Section */}
       <div className="navbar-start">
         {/* Mobile Dropdown Menu (visible on small screens) */}
-        <div className="dropdown">
+        <div className="dropdown z-20">
           <label tabIndex={0} className="btn btn-ghost md:hidden">
             <Menu className="h-6 w-6" />
           </label>
