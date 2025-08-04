@@ -17,7 +17,7 @@ const ChatContainer = () => {
     dontListenToMessages,
   } = useChatStore();
   const { authUserData } = useAuthStore();
-  const messageEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
 
   useEffect(() => {
     getMessages(selectedUser._id);
@@ -27,10 +27,10 @@ const ChatContainer = () => {
   }, [selectedUser._id, getMessages, listenToMessages, dontListenToMessages]);
 
   useEffect(() => {
-    if (messageEndRef.current && messages) {
-      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
+  if (chatContainerRef.current) {
+    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+  }
+}, [messages]);
 
   if (isMessagesLoading)
     return (
@@ -43,7 +43,7 @@ const ChatContainer = () => {
   return (
     <div className="flex-1 flex flex-col ">
       <ChatHeader />
-      <div className="flex-1 overflow-y-auto p-4 space-y-4  min-h-0">
+      <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4  min-h-0 ">
         {messages.map((message) => (
           <div
             key={message._id}
@@ -81,7 +81,6 @@ const ChatContainer = () => {
             </div>
           </div>
         ))}
-        <div ref={messageEndRef} />
       </div>
       <MessageInput />
     </div>
