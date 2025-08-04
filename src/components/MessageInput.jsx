@@ -94,7 +94,7 @@ const MessageInput = () => {
           {/* Image button - hidden on extra-small screens */}
           <button
             onClick={() => fileInputRef.current?.click()}
-            className={`hidden sm:flex btn btn-sm btn-circle
+            className={` btn btn-sm btn-circle
               ${imagePreview ? "btn-success" : ""}`}
             type="button"
           >

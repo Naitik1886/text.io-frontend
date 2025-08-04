@@ -24,9 +24,9 @@ const Navbar = () => {
             {authUserData && (
               <>
                 <li>
-                  <Link to="/profile" className="justify-between">
-                    Profile
+                  <Link to="/profile" >
                     <User className="w-4 h-4" />
+                    Profile
                   </Link>
                 </li>
                 <li>
