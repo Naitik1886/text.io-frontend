@@ -67,9 +67,11 @@ listenToMessages : () => {
     if (newMessage.senderId !== get().selectedUser?._id) return;
     
     // This correctly uses the current state to append the new message
-    set((state) => ({
-      messages: [...state.messages, newMessage],
-    }));
+    // In sendMessage function...
+set((state) => ({
+  // This ensures state.messages is always an array before spreading
+  messages: [...(state.messages || []), data],
+}));
   });
 },
 
