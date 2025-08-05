@@ -47,9 +47,11 @@ export const useChatStore = create((set ,get) => ({
 
     // This functional form is robust and prevents stale state issues.
     // It gets the most current state and appends the new message.
-    set((state) => ({
-      messages: [...state.messages, data],
-    }));
+    // In sendMessage function...
+set((state) => ({
+  // This ensures state.messages is always an array before spreading
+  messages: [...(state.messages || []), data],
+}));
 
   } catch (error) {
     console.log(error);
@@ -67,11 +69,9 @@ listenToMessages : () => {
     if (newMessage.senderId !== get().selectedUser?._id) return;
     
     // This correctly uses the current state to append the new message
-    // In sendMessage function...
-set((state) => ({
-  // This ensures state.messages is always an array before spreading
-  messages: [...(state.messages || []), data],
-}));
+    set((state) => ({
+      messages: [...state.messages, newMessage],
+    }));
   });
 },
 
