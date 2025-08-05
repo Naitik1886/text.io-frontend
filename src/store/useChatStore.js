@@ -32,7 +32,7 @@ export const useChatStore = create((set ,get) => ({
       console.log(error);
       toast.error(error?.data);
     } finally {
-      set({ isMessagesLoadng: false });
+      set({ isMessagesLoading: false });
     }
   },
 
