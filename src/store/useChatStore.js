@@ -37,25 +37,55 @@ export const useChatStore = create((set ,get) => ({
   },
 
 
-  sendMessage: async (messageInfo) => {
-  const { selectedUser } = get(); // We only need the selectedUser here
+ // In your useChatStore.js
+sendMessage: async (messageInfo) => {
+  console.log("1. sendMessage function started.");
+
+  const { selectedUser } = get();
+  if (!selectedUser) {
+    console.error(" sendMessage aborted: No selected user.");
+    return;
+  }
+
   try {
+    console.log("2. Sending data to backend:", messageInfo);
+
     const { data } = await axiosInstance.post(
       `/messages/send/${selectedUser._id}`,
       messageInfo
     );
 
-    // This functional form is robust and prevents stale state issues.
-    // It gets the most current state and appends the new message.
-    // In sendMessage function...
-set((state) => ({
-  // This ensures state.messages is always an array before spreading
-  messages: [...(state.messages || []), data],
-}));
+    console.log("3. Received response from backend:", data);
+
+    // --- Data Validation Step ---
+    if (!data || !data._id) {
+      console.error("ERROR: The server response is invalid or missing an _id.", data);
+      toast.error("Error: Received an invalid response from the server.");
+      // Stop execution because the data is bad
+      return;
+    }
+
+    console.log("4. Attempting to update client state...");
+
+    set((state) => {
+      const newMessages = [...(state.messages || []), data];
+      console.log("5. New state prepared. Total messages:", newMessages.length);
+      return { messages: newMessages };
+    });
+
+    console.log("6. State update successful! The UI should now re-render.");
 
   } catch (error) {
-    console.log(error);
-    toast.error(error?.data?.message || "Failed to send message.");
+    console.error("7. CRITICAL ERROR caught in sendMessage:", error);
+    
+    // Log detailed Axios error information if it exists
+    if (error.response) {
+      console.error("Axios response data:", error.response.data);
+      console.error("Axios response status:", error.response.status);
+      toast.error(error.response.data?.message || "An error occurred on the server.");
+    } else {
+      toast.error("An unexpected network error occurred.");
+    }
   }
 },
 
