@@ -38,21 +38,24 @@ export const useChatStore = create((set ,get) => ({
 
 
   sendMessage: async (messageInfo) => {
-    const {messages , selectedUser } = get();
-    try {
-      
-      
-      const {data} = await axiosInstance.post(`/messages/send/${selectedUser._id}` , messageInfo)
-      set({messages:[...messages, data]})
-        
-    } catch (error) {
-        console.log(error)
-        toast.error(error?.data)
-        
-    }
+  const { selectedUser } = get(); // We only need the selectedUser here
+  try {
+    const { data } = await axiosInstance.post(
+      `/messages/send/${selectedUser._id}`,
+      messageInfo
+    );
 
+    // This functional form is robust and prevents stale state issues.
+    // It gets the most current state and appends the new message.
+    set((state) => ({
+      messages: [...state.messages, data],
+    }));
 
-  },
+  } catch (error) {
+    console.log(error);
+    toast.error(error?.data?.message || "Failed to send message.");
+  }
+},
 
 // In your useChatStore.js
 listenToMessages : () => {
