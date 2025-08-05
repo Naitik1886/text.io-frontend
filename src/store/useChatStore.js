@@ -39,10 +39,8 @@ export const useChatStore = create((set ,get) => ({
 
   sendMessage: async (messageInfo) => {
     const {messages , selectedUser } = get();
-    const onlineUsers = useAuthStore.getState().onlineUsers
     try {
-      if (!onlineUsers.includes(selectedUser._id)) {
-  return toast.error("This user is currently offline.");}
+      
       
       const {data} = await axiosInstance.post(`/messages/send/${selectedUser._id}` , messageInfo)
       set({messages:[...messages, data]})
